@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use std::ops::Range;
 use std::str::FromStr;
 
+use crate::two_iter::TwoIter;
+
 pub const PUZZLE_INPUT: &str = include_str!("input.txt");
 
 pub fn part1(input: &str) -> i64 {
@@ -198,7 +200,7 @@ impl Mapping {
                     ),
                     (Ordering::Less | Ordering::Equal, Ordering::Greater | Ordering::Equal) => (
                         Some((value.start + self.diff)..(value.end + self.diff)),
-                        Remainder::None,
+                        Remainder::Zero,
                     ),
                 }
             }
@@ -206,29 +208,7 @@ impl Mapping {
     }
 }
 
-#[derive(Default)]
-enum Remainder {
-    #[default]
-    None,
-    One(Range<i64>),
-    Two(Range<i64>, Range<i64>),
-}
-
-impl Iterator for Remainder {
-    type Item = Range<i64>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let this = std::mem::take(self);
-        let (value, rest) = match this {
-            Self::None => (None, Self::None),
-            Self::One(value) => (Some(value), Self::None),
-            Self::Two(first, second) => (Some(first), Self::One(second)),
-        };
-        *self = rest;
-
-        value
-    }
-}
+type Remainder = TwoIter<Range<i64>>;
 
 #[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
 enum Type {

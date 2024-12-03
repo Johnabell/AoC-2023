@@ -17,8 +17,8 @@ struct Map<'a> {
 }
 
 impl<'a> Map<'a> {
-    const START_NODE: &str = "AAA";
-    const END_NODE: &str = "ZZZ";
+    const START_NODE: &'static str = "AAA";
+    const END_NODE: &'static str = "ZZZ";
     fn parse(input: &'a str) -> Self {
         let (dir, nodes) = input.split_once("\n\n").unwrap();
 
